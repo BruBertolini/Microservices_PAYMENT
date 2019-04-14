@@ -6,12 +6,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.annotations.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 
 @Slf4j
 @RestController
+@Api(value = "Payment", description = "Payment Controller REST API")
 public class PaymentController {
 
     private PaymentService service;
@@ -21,7 +23,10 @@ public class PaymentController {
     }
 
    
-
+    @ApiOperation(httpMethod = "POST", value = "Create new payment")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Returns created payment", response = Payment.class)
+    })
     @PostMapping("/save")
     public ResponseEntity<Object> savePayment(@RequestBody Payment payment){
         Payment savePayment = this.service.save(payment);
@@ -32,6 +37,10 @@ public class PaymentController {
         return ResponseEntity.created(location).build();
     }
 
+    @ApiOperation(httpMethod = "PATCH", value = "Update payment")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Returns success message")
+    })
     @PatchMapping("/update")
     public ResponseEntity updatePayment(@RequestBody Payment payment){
         if (!this.service.update(payment))
@@ -40,6 +49,10 @@ public class PaymentController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @ApiOperation(httpMethod = "DELETE", value = "Delete payment by ID")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Retuns success message")
+    })
     @DeleteMapping("/payment/{id}")
     public ResponseEntity deletePayment(@PathVariable("id") int id){
         if (this.service.delete(id)) {
@@ -49,6 +62,10 @@ public class PaymentController {
         }
     }
     
+    @ApiOperation(httpMethod = "GET", value = "Get payment by ID")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Returns payment object", response = Payment.class)
+    })
     @GetMapping("/findById/{id}")
     public ResponseEntity<Payment> find(@PathVariable("id") int id){
         Payment payment = this.service.findById(id);
